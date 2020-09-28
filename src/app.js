@@ -1,8 +1,6 @@
 const routes = require('./api/routes')
 const express = require('express')
 const morgan = require('morgan')
-
-const logger = require('./utils/logger')
 const app = express()
 
 module.exports = (ctx) => {
@@ -11,7 +9,7 @@ module.exports = (ctx) => {
   })
   // configure routes, middlewares
   app.use(express.json())
-  app.use(morgan('combined', { stream: logger.stream }))
+  app.use(morgan('combined', { stream: ctx.logger.stream }))
   app.use('/api', routes(ctx))
   return app
 }

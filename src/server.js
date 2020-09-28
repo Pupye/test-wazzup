@@ -1,8 +1,17 @@
 const db = 'hello'
-const app = require('./app')(db)
+const config = require('./config')
+const logger = require('./utils/logger')
+const ctx = {
+  db,
+  config,
+  logger
+}
 
 const startServer = async () => {
-  app.listen(8000, 'localhost')
+  const app = require('./app')(ctx)
+  app.listen(config.server.port, config.server.host, () => {
+    logger.info(`server is online at ${config.server.port}`)
+  })
 }
 
 startServer()
