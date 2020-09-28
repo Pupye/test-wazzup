@@ -2,24 +2,27 @@ require('dotenv').config()
 
 module.exports = {
   development: {
-    username: 'root',
-    password: null,
-    database: 'database_test',
+    username: 'dev',
+    password: 'dev',
+    database: 'database_dev',
     host: '127.0.0.1',
-    dialect: 'mysql'
+    port: '5432',
+    dialect: 'postgres'
   },
   test: {
-    username: 'root',
-    password: null,
-    database: 'database_test',
+    username: 'dev',
+    password: 'dev',
+    database: 'database_dev',
     host: '127.0.0.1',
-    dialect: 'mysql'
+    port: '5432',
+    dialect: 'postgres'
   },
   production: {
-    username: 'root',
-    password: null,
-    database: 'database_test',
+    username: 'dev',
+    password: 'dev',
+    database: 'database_dev',
     host: '127.0.0.1',
-    dialect: 'mysql'
+    port: '5432',
+    dialect: 'postgres'
   }
 }
