@@ -1,10 +1,4 @@
-const dotenv = require('dotenv')
-const result = dotenv.config()
-
-if (result.error) {
-  console.log(result)
-  throw result.error
-}
+require('dotenv').config()
 
 module.exports = {
   server: {
