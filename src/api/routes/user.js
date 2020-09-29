@@ -18,4 +18,20 @@ module.exports = (ctx, router) => {
       next(error)
     }
   })
+  router.post('/users/login', celebrate({
+    [Segments.BODY]: Joi.object().keys({
+      userName: Joi.string().required(),
+      password: Joi.string().required()
+    })
+  }), async (req, res, next) => {
+    const user = req.body
+    try {
+      const authToken = await userService(ctx).loginUser(user)
+      res.set('authorization', authToken)
+      res.status(200).end()
+    } catch (error) {
+      logger.error(error.stack)
+      next(error)
+    }
+  })
 }
