@@ -11,7 +11,9 @@ module.exports = (ctx) => {
   })
   // configure routes, middlewares
   app.use(express.json())
-  app.use(morgan('combined', { stream: ctx.logger.stream }))
+  if (ctx.config.env !== 'test') {
+    app.use(morgan('combined', { stream: ctx.logger.stream }))
+  }
   app.use('/api', routes(ctx))
 
   // errors
