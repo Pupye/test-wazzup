@@ -11,5 +11,5 @@ env:
 
 jobs:
   include:
-    - stage: test
+    - stage: unit-test
       script: npm test
