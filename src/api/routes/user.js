@@ -1,6 +1,8 @@
 const { celebrate, Joi, Segments } = require('celebrate')
+const { userService } = require('../../services')
 
 module.exports = (ctx, router) => {
+  const { logger } = ctx
   router.get('/users', async (req, res) => {
     res.send({
       text: 'Success user'
@@ -11,7 +13,14 @@ module.exports = (ctx, router) => {
       userName: Joi.string().required(),
       password: Joi.string().length(8).required()
     })
-  }), async (req, res) => {
-    res.status(201).end()
+  }), async (req, res, next) => {
+    const user = req.body
+    try {
+      await userService(ctx).createUser(user)
+      res.status(201).end()
+    } catch (error) {
+      logger.error(error.stack)
+      next(error)
+    }
   })
 }

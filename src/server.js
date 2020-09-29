@@ -1,4 +1,4 @@
-const db = 'hello'
+const db = require('./db/models')
 const config = require('./config')
 const logger = require('./utils/logger')
 const ctx = {

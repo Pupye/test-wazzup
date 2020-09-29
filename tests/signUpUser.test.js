@@ -1,17 +1,26 @@
+const config = require('../src/config')
 const chai = require('chai')
 const chaiHttp = require('chai-http')
 
 const ctx = {
   logger: {
-    stream: undefined
-  }
+    stream: undefined,
+    error: (e) => { console.log(e) }
+  },
+  db: {
+    User: {
+      create: async () => { },
+      findOne: async () => null
+    }
+  },
+  config
 }
 const app = require('../src/app')(ctx)
 
 const { expect } = chai
 chai.use(chaiHttp)
 
-describe('users', () => {
+describe('sign up', () => {
   const user = {
     userName: 'test_',
     password: 'test1234'
