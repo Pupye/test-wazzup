@@ -2,7 +2,7 @@ const routes = require('./api/routes')
 const express = require('express')
 const morgan = require('morgan')
 const { errors } = require('celebrate')
-const { generalErrorHandler } = require('./errors/handlers')
+const { generalErrorHandler, userErrorHandler } = require('./errors/handlers')
 const app = express()
 
 module.exports = (ctx) => {
@@ -16,6 +16,7 @@ module.exports = (ctx) => {
 
   // errors
   app.use(errors())
+  app.use(userErrorHandler)
   app.use(generalErrorHandler)
   return app
 }

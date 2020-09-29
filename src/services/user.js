@@ -1,4 +1,5 @@
 const bcrypt = require('bcrypt')
+const UserError = require('../errors/userError')
 module.exports = (ctx) => {
   const { db, config } = ctx
 
@@ -8,7 +9,7 @@ module.exports = (ctx) => {
         where: { userName: user.userName }
       })
       if (exists) {
-        throw Error('username already taken')
+        throw new UserError('username already taken')
       }
       user.password = await bcrypt.hash(user.password, config.saltRounds)
       await db.User.create(user)
