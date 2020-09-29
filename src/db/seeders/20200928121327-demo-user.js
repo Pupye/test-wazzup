@@ -1,12 +1,10 @@
 'use strict'
-
-const { generateTestPass } = require('../helper')
-
+const bcrypt = require('bcrypt')
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     return queryInterface.bulkInsert('users', [{
       user_name: 'test',
-      password: generateTestPass()
+      password: bcrypt.hashSync('testtest', 1)
     }])
   },
 
