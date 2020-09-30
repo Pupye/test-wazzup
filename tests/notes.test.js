@@ -4,7 +4,7 @@ const chaiHttp = require('chai-http')
 const ctx = {
   logger: {
     stream: undefined,
-    error: () => { }
+    error: (e) => { console.log(e) }
   },
   db: {
     User: {
@@ -18,6 +18,9 @@ const ctx = {
           password: bcrypt.hashSync('testtest', 1)
         }
       }
+    },
+    Note: {
+      create: async (note) => { }
     }
   },
   config
@@ -42,6 +45,22 @@ describe('note operations', () => {
             done(err)
           }
           expect(res).to.have.status(201)
+          done()
+        })
+    })
+  })
+
+  describe('POST /api/notes', () => {
+    it('should reject creation invalid body', (done) => {
+      chai.request(app).post('/api/notes')
+        .send({
+          title: note.title
+        })
+        .end((err, res) => {
+          if (err) {
+            done(err)
+          }
+          expect(res).to.have.status(400)
           done()
         })
     })
