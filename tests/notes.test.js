@@ -101,9 +101,9 @@ describe('note operations', () => {
     })
   })
 
-  describe('GET /api/notes/:id', () => {
+  describe('GET /api/notes/:id/note', () => {
     it('should get note with id', (done) => {
-      chai.request(app).get(`/api/notes/${1}`)
+      chai.request(app).get(`/api/notes/${1}/note`)
         .set('authorization', `Bearer ${accessToken}`)
         .end((err, res) => {
           if (err) {
@@ -119,7 +119,7 @@ describe('note operations', () => {
 
   describe('GET /api/notes/:id', () => {
     it('should get empty body', (done) => {
-      chai.request(app).get(`/api/notes/${2}`) // suppose it does not exists
+      chai.request(app).get(`/api/notes/${2}/note`) // suppose it does not exists
         .set('authorization', `Bearer ${accessToken}`)
         .end((err, res) => {
           if (err) {
@@ -135,13 +135,28 @@ describe('note operations', () => {
 
   describe('GET /api/notes/:id', () => {
     it('should reject because of invalid token', (done) => {
-      chai.request(app).get(`/api/notes/${2}`) // suppose it does not exists
+      chai.request(app).get(`/api/notes/${1}/note`)
         .set('authorization', `Bearer token`)
         .end((err, res) => {
           if (err) {
             done(err)
           }
           expect(res).to.have.status(403)
+          done()
+        })
+    })
+  })
+
+  describe('GET /api/notes with query params', () => {
+    it('should paginate notes', (done) => {
+      chai.request(app).get(`/api/notes`)
+        .set('authorization', `Bearer ${accessToken}`)
+        .end((err, res) => {
+          if (err) {
+            done(err)
+          }
+          expect(res).to.have.status(200)
+          expect(res.body).to.be('array')
           done()
         })
     })

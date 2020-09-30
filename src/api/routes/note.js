@@ -39,7 +39,7 @@ module.exports = (ctx, router) => {
     }
   })
 
-  router.get('/notes/:id', async (req, res, next) => {
+  router.get('/notes/:id/note', async (req, res, next) => {
     try {
       const noteId = parseInt(req.params.id)
       const { user } = req
