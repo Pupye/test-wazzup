@@ -36,6 +36,7 @@ module.exports = {
   accessId,
   accessToken,
   redisClient: {
+    append: async () => { },
     get: async (sharingKey) => {
       const storage = {
         'sharing 1 1': accessId,

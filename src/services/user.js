@@ -2,7 +2,7 @@ const bcrypt = require('bcrypt')
 const UserError = require('../errors/userError')
 const jwt = require('jsonwebtoken')
 module.exports = (ctx) => {
-  const { db, config } = ctx
+  const { db, config, redisClient } = ctx
 
   return {
     createUser: async (user) => {
@@ -28,6 +28,8 @@ module.exports = (ctx) => {
       }
       delete exists.password
       const authToken = jwt.sign(exists, config.secrets.accessToken)
+      const whilteListKey = `${user.id} white list`
+      await redisClient.append(whilteListKey, authToken)
       return authToken
     }
   }
