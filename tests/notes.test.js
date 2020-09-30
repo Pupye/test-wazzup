@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken')
 const ctx = {
   logger: {
     stream: undefined,
-    error: (e) => { console.log(e) }
+    error: (e) => { console.log() }
   },
   db: {
     User: {
@@ -156,7 +156,7 @@ describe('note operations', () => {
         .set('authorization', `Bearer ${accessToken}`)
         .query({
           offset: 10,
-          limit: 5
+          limit: 500
         })
         .end((err, res) => {
           if (err) {

@@ -21,7 +21,8 @@ module.exports = (ctx) => {
       })
       return note
     },
-    getUserNotes: async (offset = 0, limit = 20, authorId) => {
+    getUserNotes: async (limit = 20, offset = 0, authorId) => {
+      limit = Math.min(limit, 20) // takes care of overflow
       const notes = await db.Note.findAll({
         limit,
         offset,

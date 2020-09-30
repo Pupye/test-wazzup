@@ -44,7 +44,7 @@ module.exports = (ctx, router) => {
       const { query } = req
       const { user } = req
       console.log(query)
-      const notes = await noteService(ctx).getUserNotes(query.limit, query.offset, user.id)
+      const notes = await noteService(ctx).getUserNotes(parseInt(query.limit), parseInt(query.offset), user.id)
       res.status(200).json(notes)
     } catch (error) {
       logger.error(error.stack)
