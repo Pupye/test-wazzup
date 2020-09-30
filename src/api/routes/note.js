@@ -1,7 +1,9 @@
 const { celebrate, Joi, Segments } = require('celebrate')
 const { noteService } = require('../../services')
+const { authenticate } = require('../middlewares')
 module.exports = (ctx, router) => {
   const { logger } = ctx
+  router.use('/notes', authenticate(ctx))
   router.get('/notes', async (req, res) => {
     res.send({
       text: 'Success note'
@@ -14,9 +16,9 @@ module.exports = (ctx, router) => {
     })
   }), async (req, res, next) => {
     const note = req.body
-    const userId = 'id'
+    const user = req.user
     try {
-      await noteService(ctx).createNote(note, userId)
+      await noteService(ctx).createNote(note, user.id)
       res.status(201).end()
     } catch (error) {
       logger.error(error.stack)
