@@ -1,6 +1,5 @@
 const chai = require('chai')
 const chaiHttp = require('chai-http')
-const jwt = require('jsonwebtoken')
 const ctx = require('./context')
 const app = require('../src/app')(ctx)
 
@@ -13,15 +12,10 @@ describe('note operations', () => {
     title: 'test',
     content: 'test note'
   }
-  const user = {
-    id: 1,
-    userName: 'test'
-  }
-  const accessToken = jwt.sign(user, ctx.config.secrets.accessToken)
   describe('POST /api/notes', () => {
     it('should create note', (done) => {
       chai.request(app).post('/api/notes')
-        .set('authorization', `Bearer ${accessToken}`)
+        .set('authorization', `Bearer ${ctx.accessToken}`)
         .send(note)
         .end((err, res) => {
           if (err) {
@@ -37,7 +31,7 @@ describe('note operations', () => {
 
     it('should reject creation invalid body', (done) => {
       chai.request(app).post('/api/notes')
-        .set('authorization', `Bearer ${accessToken}`)
+        .set('authorization', `Bearer ${ctx.accessToken}`)
         .send({
           title: note.title
         })
@@ -72,7 +66,7 @@ describe('note operations', () => {
   describe('GET /api/notes/:id/note', () => {
     it('should get note with id', (done) => {
       chai.request(app).get(`/api/notes/${1}/note`)
-        .set('authorization', `Bearer ${accessToken}`)
+        .set('authorization', `Bearer ${ctx.accessToken}`)
         .end((err, res) => {
           if (err) {
             done(err)
@@ -88,7 +82,7 @@ describe('note operations', () => {
   describe('GET /api/notes/:id/note', () => {
     it('should get empty body', (done) => {
       chai.request(app).get(`/api/notes/${2}/note`) // suppose it does not exists
-        .set('authorization', `Bearer ${accessToken}`)
+        .set('authorization', `Bearer ${ctx.accessToken}`)
         .end((err, res) => {
           if (err) {
             done(err)
@@ -118,7 +112,7 @@ describe('note operations', () => {
   describe('GET /api/notes with query params', () => {
     it('should paginate notes', (done) => {
       chai.request(app).get(`/api/notes`)
-        .set('authorization', `Bearer ${accessToken}`)
+        .set('authorization', `Bearer ${ctx.accessToken}`)
         .query({
           offset: 10,
           limit: 500
@@ -137,7 +131,7 @@ describe('note operations', () => {
   describe('POST /api/notes/:id/note ', () => {
     it('should update note with id', (done) => {
       chai.request(app).post(`/api/notes/${1}/note`)
-        .set('authorization', `Bearer ${accessToken}`)
+        .set('authorization', `Bearer ${ctx.accessToken}`)
         .send({
           title: 'new title',
           content: 'new content'
@@ -157,7 +151,7 @@ describe('note operations', () => {
   describe('POST /api/notes/:id/note ', () => {
     it('should reject because nothing was updated', (done) => {
       chai.request(app).post(`/api/notes/${2}/note`)
-        .set('authorization', `Bearer ${accessToken}`)
+        .set('authorization', `Bearer ${ctx.accessToken}`)
         .send({
           title: 'new title',
           content: 'new content'
@@ -175,7 +169,7 @@ describe('note operations', () => {
   describe('DELETE /api/notes/:id/note ', () => {
     it('should delete note', (done) => {
       chai.request(app).delete(`/api/notes/${1}/note`)
-        .set('authorization', `Bearer ${accessToken}`)
+        .set('authorization', `Bearer ${ctx.accessToken}`)
         .end((err, res) => {
           if (err) {
             done(err)

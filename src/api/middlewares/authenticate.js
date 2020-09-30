@@ -2,7 +2,7 @@ const UserError = require('../../errors/userError')
 const jwt = require('jsonwebtoken')
 
 module.exports = (ctx) => {
-  const { config, logger } = ctx
+  const { config, logger, redisClient } = ctx
   return async (req, res, next) => {
     try {
       if (!req.headers.authorization) {
@@ -13,6 +13,15 @@ module.exports = (ctx) => {
         throw new UserError('no access token defined', 403)
       }
       const verified = jwt.verify(accessToken, config.secrets.accessToken)
+      const whiteListKey = `${verified.id} white list`
+      const whiteString = await redisClient.get(whiteListKey)
+      if (!whiteString) {
+        throw new UserError('access token invalidated', 403)
+      }
+      const tokens = whiteString.split(' ')
+      if (!tokens.includes(accessToken)) {
+        throw new UserError('access token invalidated', 403)
+      }
       req.user = verified
       next()
     } catch (error) {

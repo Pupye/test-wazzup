@@ -1,6 +1,7 @@
 const config = require('../src/config')
 const bcrypt = require('bcrypt')
 const Encryptor = require('simple-encryptor')
+const jwt = require('jsonwebtoken')
 
 const generateAccessId = () => {
   const encryptor = Encryptor({
@@ -18,19 +19,29 @@ const generateAccessId = () => {
     .replace(/=/g, config.replacer.eq)
   return accessId
 }
+const user = {
+  id: 1,
+  userName: 'test'
+}
 
+const accessToken = jwt.sign(user, config.secrets.accessToken)
 const accessId = generateAccessId()
+
 module.exports = {
   logger: {
     stream: undefined,
     error: (e) => { }
   },
-  accessId: accessId,
+  user,
+  accessId,
+  accessToken,
   redisClient: {
     get: async (sharingKey) => {
-      if (sharingKey === 'sharing 1 1') {
-        return accessId
+      const storage = {
+        'sharing 1 1': accessId,
+        '1 white list': `${accessToken} ${accessToken}`
       }
+      return storage[sharingKey]
     },
     set: async () => { }
   },
