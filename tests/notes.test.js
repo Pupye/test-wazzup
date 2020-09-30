@@ -35,9 +35,9 @@ const ctx = {
       },
       update: async (updateFileds, options) => {
         if (options.where.id !== 1) {
-          return []
+          return [0, []]
         }
-        return [updateFileds]
+        return [[1], [updateFileds]]
       }
     }
   },
