@@ -20,6 +20,16 @@ module.exports = (ctx) => {
         where: { id: noteId, authorId }
       })
       return note
+    },
+    getUserNotes: async (offset = 0, limit = 20, authorId) => {
+      const notes = await db.Note.findAll({
+        limit,
+        offset,
+        where: {
+          authorId
+        }
+      })
+      return notes
     }
   }
 }

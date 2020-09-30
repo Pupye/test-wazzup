@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken')
 const ctx = {
   logger: {
     stream: undefined,
-    error: (e) => { }
+    error: (e) => { console.log(e) }
   },
   db: {
     User: {
@@ -29,6 +29,9 @@ const ctx = {
           title: 'test',
           content: 'test'
         }
+      },
+      findAll: async () => {
+        return []
       }
     }
   },
@@ -151,12 +154,16 @@ describe('note operations', () => {
     it('should paginate notes', (done) => {
       chai.request(app).get(`/api/notes`)
         .set('authorization', `Bearer ${accessToken}`)
+        .query({
+          offset: 10,
+          limit: 5
+        })
         .end((err, res) => {
           if (err) {
             done(err)
           }
           expect(res).to.have.status(200)
-          expect(res.body).to.be('array')
+          expect(res.body).to.be.an('array')
           done()
         })
     })

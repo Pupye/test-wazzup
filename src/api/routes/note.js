@@ -39,6 +39,19 @@ module.exports = (ctx, router) => {
     }
   })
 
+  router.get('/notes', async (req, res, next) => {
+    try {
+      const { query } = req
+      const { user } = req
+      console.log(query)
+      const notes = await noteService(ctx).getUserNotes(query.limit, query.offset, user.id)
+      res.status(200).json(notes)
+    } catch (error) {
+      logger.error(error.stack)
+      next(error)
+    }
+  })
+
   router.get('/notes/:id/note', async (req, res, next) => {
     try {
       const noteId = parseInt(req.params.id)
