@@ -14,6 +14,12 @@ module.exports = (ctx) => {
         authorId
       }
       await db.Note.create(userNote)
+    },
+    getUserNote: async (noteId, authorId) => {
+      const note = await db.Note.findOne({
+        where: { id: noteId, authorId }
+      })
+      return note
     }
   }
 }

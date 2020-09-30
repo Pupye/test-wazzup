@@ -9,6 +9,7 @@ const ctx = {
   },
   db: {
     User: {
+      findByPk: async () => 'found',
       findOne: async (userName) => {
         if (userName === 'notExists') {
           return undefined
@@ -21,7 +22,14 @@ const ctx = {
       }
     },
     Note: {
-      create: async (note) => { }
+      create: async (note) => { },
+      findOne: async (params) => {
+        if (params.where.id !== 1) return {} //does not exists
+        return {
+          title: 'test',
+          content: 'test'
+        }
+      }
     }
   },
   config
@@ -83,6 +91,52 @@ describe('note operations', () => {
         .send({
           note
         })
+        .end((err, res) => {
+          if (err) {
+            done(err)
+          }
+          expect(res).to.have.status(403)
+          done()
+        })
+    })
+  })
+
+  describe('GET /api/notes/:id', () => {
+    it('should get note with id', (done) => {
+      chai.request(app).get(`/api/notes/${1}`)
+        .set('authorization', `Bearer ${accessToken}`)
+        .end((err, res) => {
+          if (err) {
+            done(err)
+          }
+          expect(res).to.have.status(200)
+          expect(res.body).to.have.property('title')
+          expect(res.body).to.have.property('content')
+          done()
+        })
+    })
+  })
+
+  describe('GET /api/notes/:id', () => {
+    it('should get empty body', (done) => {
+      chai.request(app).get(`/api/notes/${2}`) // suppose it does not exists
+        .set('authorization', `Bearer ${accessToken}`)
+        .end((err, res) => {
+          if (err) {
+            done(err)
+          }
+          expect(res).to.have.status(200)
+          expect(res.body).to.not.have.property('title')
+          expect(res.body).to.not.have.property('content')
+          done()
+        })
+    })
+  })
+
+  describe('GET /api/notes/:id', () => {
+    it('should reject because of invalid token', (done) => {
+      chai.request(app).get(`/api/notes/${2}`) // suppose it does not exists
+        .set('authorization', `Bearer token`)
         .end((err, res) => {
           if (err) {
             done(err)
