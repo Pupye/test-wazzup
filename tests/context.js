@@ -1,14 +1,38 @@
 const config = require('../src/config')
 const bcrypt = require('bcrypt')
+const Encryptor = require('simple-encryptor')
 
+const generateAccessId = () => {
+  const encryptor = Encryptor({
+    key: config.secrets.sharingSecret,
+    hmac: false
+  })
+  const encrypted = encryptor.encrypt({
+    sharingKey: 'sharing 1',
+    noteId: 1,
+    authorId: 1
+  })
+  const accessId = encrypted
+    .replace(/\+/g, config.replacer.plus)
+    .replace(/\//g, config.replacer.slash)
+    .replace(/=/g, config.replacer.eq)
+  return accessId
+}
+
+const accessId = generateAccessId()
 module.exports = {
   logger: {
     stream: undefined,
     error: (e) => { }
   },
+  accessId: accessId,
   redisClient: {
-    get: () => { },
-    set: () => { }
+    get: async (sharingKey) => {
+      if (sharingKey === 'sharing 1') {
+        return accessId
+      }
+    },
+    set: async () => { }
   },
   db: {
     User: {

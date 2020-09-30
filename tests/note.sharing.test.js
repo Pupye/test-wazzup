@@ -30,4 +30,20 @@ describe('sharing note', () => {
         })
     })
   })
+
+  describe('GET /api/note/:accessId/shared', () => {
+    it('should return share link', (done) => {
+      chai.request(app).get(`/api/note/${ctx.accessId}/shared`)
+        .end((err, res) => {
+          if (err) {
+            done(err)
+          }
+          expect(res).to.have.status(200)
+          console.log(res.body)
+          expect(res.body).to.have.property('title')
+          expect(res.body).to.have.property('content')
+          done()
+        })
+    })
+  })
 })

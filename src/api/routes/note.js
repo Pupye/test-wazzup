@@ -107,4 +107,16 @@ module.exports = (ctx, router) => {
       next(error)
     }
   })
+
+  router.get('/note/:accessId/shared', async (req, res, next) => {
+    try {
+      const encrypted = req.params.accessId
+      const note = await noteService(ctx).getSharedNote(encrypted)
+      res.status(200).json(note)
+    } catch (error) {
+      console.error(error.stack)
+      logger.error(error.stack)
+      next(error)
+    }
+  })
 }

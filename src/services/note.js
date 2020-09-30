@@ -73,19 +73,48 @@ module.exports = (ctx) => {
       if (!exists) {
         throw new UserError('note does not exists', 400)
       }
-      const shareKey = `sharing ${authorId}`
-      let accessId = await redisClient.get(shareKey)
+      const sharingKey = `sharing ${authorId}`
+      let accessId = await redisClient.get(sharingKey)
       if (accessId) {
         return accessId
       } else {
-        const encrypted = encryptor.encrypt(exists)
+        const encrypted = encryptor.encrypt({
+          sharingKey,
+          noteId,
+          authorId
+        })
         accessId = encrypted
           .replace(/\+/g, config.replacer.plus)
           .replace(/\//g, config.replacer.slash)
           .replace(/=/g, config.replacer.eq)
-        await redisClient.set(shareKey, accessId)
+        await redisClient.set(sharingKey, accessId)
         return accessId
       }
+    },
+    getSharedNote: async (accessId) => {
+      const regexPlus = new RegExp(config.replacer.plus, 'g')
+      const regexSlash = new RegExp(config.replacer.slash, 'g')
+      const regexEq = new RegExp(config.replacer.eq, 'g')
+      const encrypted = accessId
+        .replace(regexPlus, '+')
+        .replace(regexSlash, '/')
+        .replace(regexEq, '=')
+
+      const accessPayload = encryptor.decrypt(encrypted)
+      if (!accessPayload) {
+        throw new UserError('invalid link', 403)
+      }
+      const checkWith = await redisClient.get(accessPayload.sharingKey)
+      if (accessId !== checkWith) {
+        throw new UserError('invalid link', 403)
+      }
+      const sharedNote = db.Note.findOne({
+        where: {
+          id: accessPayload.noteId,
+          authorId: accessPayload.authorId
+        }
+      })
+      return sharedNote
     }
   }
 }
