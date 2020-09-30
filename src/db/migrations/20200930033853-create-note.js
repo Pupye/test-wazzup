@@ -16,7 +16,7 @@ module.exports = {
         allowNull: false,
         type: Sequelize.STRING(1024)
       },
-      author_id: {
+      authorId: {
         type: Sequelize.INTEGER,
         onDelete: 'cascade',
         references: {

@@ -2,8 +2,12 @@ module.exports = (ctx) => {
   const { db } = ctx
 
   return {
-    createNote: async (note, id) => {
-      await db.Note.create(note)
+    createNote: async (note, authorId) => {
+      const userNote = {
+        ...note,
+        authorId
+      }
+      await db.Note.create(userNote)
     }
   }
 }
