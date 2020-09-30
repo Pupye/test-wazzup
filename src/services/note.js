@@ -50,6 +50,14 @@ module.exports = (ctx) => {
         throw new UserError('noting was updated', 403)
       }
       return updatedNotes[1][0]
+    },
+    deleteUserNote: async (noteId, authorId) => {
+      await db.Note.destroy({
+        where: {
+          id: noteId,
+          authorId
+        }
+      })
     }
   }
 }

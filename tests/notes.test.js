@@ -38,7 +38,8 @@ const ctx = {
           return [0, []]
         }
         return [[1], [updateFileds]]
-      }
+      },
+      destroy: async () => { }
     }
   },
   config
@@ -208,6 +209,20 @@ describe('note operations', () => {
             done(err)
           }
           expect(res).to.have.status(403)
+          done()
+        })
+    })
+  })
+
+  describe('DELETE /api/notes/:id/note ', () => {
+    it('should delete note', (done) => {
+      chai.request(app).delete(`/api/notes/${1}/note`)
+        .set('authorization', `Bearer ${accessToken}`)
+        .end((err, res) => {
+          if (err) {
+            done(err)
+          }
+          expect(res).to.have.status(200)
           done()
         })
     })

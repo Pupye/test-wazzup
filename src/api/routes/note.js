@@ -81,4 +81,16 @@ module.exports = (ctx, router) => {
       next(error)
     }
   })
+
+  router.delete('/notes/:id/note', async (req, res, next) => {
+    try {
+      const noteId = parseInt(req.params.id)
+      const { user } = req
+      await noteService(ctx).deleteUserNote(noteId, user.id)
+      res.status(200).end()
+    } catch (error) {
+      logger.error(error.stack)
+      next(error)
+    }
+  })
 }
