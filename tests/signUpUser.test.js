@@ -5,7 +5,7 @@ const chaiHttp = require('chai-http')
 const ctx = {
   logger: {
     stream: undefined,
-    error: (e) => { console.log(e) }
+    error: (e) => { }
   },
   db: {
     User: {

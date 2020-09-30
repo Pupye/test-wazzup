@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken')
 const ctx = {
   logger: {
     stream: undefined,
-    error: (e) => { console.log() }
+    error: (e) => { }
   },
   db: {
     User: {
@@ -32,6 +32,12 @@ const ctx = {
       },
       findAll: async () => {
         return []
+      },
+      update: async (updateFileds, options) => {
+        if (options.where.id !== 1) {
+          return []
+        }
+        return [updateFileds]
       }
     }
   },
@@ -120,7 +126,7 @@ describe('note operations', () => {
     })
   })
 
-  describe('GET /api/notes/:id', () => {
+  describe('GET /api/notes/:id/note', () => {
     it('should get empty body', (done) => {
       chai.request(app).get(`/api/notes/${2}/note`) // suppose it does not exists
         .set('authorization', `Bearer ${accessToken}`)
@@ -136,7 +142,7 @@ describe('note operations', () => {
     })
   })
 
-  describe('GET /api/notes/:id', () => {
+  describe('GET /api/notes/:id/note', () => {
     it('should reject because of invalid token', (done) => {
       chai.request(app).get(`/api/notes/${1}/note`)
         .set('authorization', `Bearer token`)
@@ -164,6 +170,44 @@ describe('note operations', () => {
           }
           expect(res).to.have.status(200)
           expect(res.body).to.be.an('array')
+          done()
+        })
+    })
+  })
+
+  describe('POST /api/notes/:id/note ', () => {
+    it('should update note with id', (done) => {
+      chai.request(app).post(`/api/notes/${1}/note`)
+        .set('authorization', `Bearer ${accessToken}`)
+        .send({
+          title: 'new title',
+          content: 'new content'
+        })
+        .end((err, res) => {
+          if (err) {
+            done(err)
+          }
+          expect(res).to.have.status(200)
+          expect(res.body).to.have.property('title')
+          expect(res.body.title).to.be.eq('new title')
+          done()
+        })
+    })
+  })
+
+  describe('POST /api/notes/:id/note ', () => {
+    it('should reject because nothing was updated', (done) => {
+      chai.request(app).post(`/api/notes/${2}/note`)
+        .set('authorization', `Bearer ${accessToken}`)
+        .send({
+          title: 'new title',
+          content: 'new content'
+        })
+        .end((err, res) => {
+          if (err) {
+            done(err)
+          }
+          expect(res).to.have.status(403)
           done()
         })
     })
