@@ -12,14 +12,6 @@ module.exports = (sequelize, DataTypes) => {
     content: {
       allowNull: false,
       type: DataTypes.STRING(1024)
-    },
-    author_id: {
-      type: DataTypes.INTEGER,
-      onDelete: 'cascade',
-      references: {
-        model: 'users',
-        key: 'id'
-      }
     }
   }, {
     tableName: 'notes',
@@ -29,7 +21,8 @@ module.exports = (sequelize, DataTypes) => {
   Note.associate = (models) => {
     Note.belongsTo(models.User, {
       foreignKey: 'id',
-      onDelete: 'CASCADE'
+      targetKey: 'author_id',
+      onDelete: 'cascade'
     })
   }
   return Note
