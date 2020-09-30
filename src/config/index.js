@@ -7,7 +7,7 @@ module.exports = {
     host: process.env.HOST
   },
   saltRounds: parseInt(process.env.SALT_ROUNDS),
-  jwt: {
-    secret: process.env.JWT_SECRET
+  secrets: {
+    accessToken: process.env.JWT_SECRET
   }
 }

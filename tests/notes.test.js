@@ -1,10 +1,11 @@
 const config = require('../src/config')
 const chai = require('chai')
 const chaiHttp = require('chai-http')
+const jwt = require('jsonwebtoken')
 const ctx = {
   logger: {
     stream: undefined,
-    error: (e) => { console.log(e) }
+    error: (e) => { }
   },
   db: {
     User: {
@@ -36,9 +37,15 @@ describe('note operations', () => {
     title: 'test',
     content: 'test note'
   }
+  const user = {
+    id: 1,
+    userName: 'test'
+  }
+  const accessToken = jwt.sign(user, config.secrets.accessToken)
   describe('POST /api/notes', () => {
     it('should create note', (done) => {
       chai.request(app).post('/api/notes')
+        .set('authorization', `Bearer ${accessToken}`)
         .send(note)
         .end((err, res) => {
           if (err) {
@@ -51,8 +58,10 @@ describe('note operations', () => {
   })
 
   describe('POST /api/notes', () => {
+
     it('should reject creation invalid body', (done) => {
       chai.request(app).post('/api/notes')
+        .set('authorization', `Bearer ${accessToken}`)
         .send({
           title: note.title
         })
@@ -61,6 +70,24 @@ describe('note operations', () => {
             done(err)
           }
           expect(res).to.have.status(400)
+          done()
+        })
+    })
+  })
+
+  describe('POST /api/notes', () => {
+
+    it('should reject creation invalid token', (done) => {
+      chai.request(app).post('/api/notes')
+        .set('authorization', `Bearer invalid`)
+        .send({
+          note
+        })
+        .end((err, res) => {
+          if (err) {
+            done(err)
+          }
+          expect(res).to.have.status(403)
           done()
         })
     })

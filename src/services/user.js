@@ -27,7 +27,7 @@ module.exports = (ctx) => {
         throw new UserError('incorrect userName or password', 403)
       }
       delete exists.password
-      const authToken = jwt.sign(exists, config.jwt.secret)
+      const authToken = jwt.sign(exists, config.secrets.accessToken)
       return authToken
     }
   }
