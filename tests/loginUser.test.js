@@ -1,29 +1,7 @@
-const config = require('../src/config')
 const chai = require('chai')
 const chaiHttp = require('chai-http')
-const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
-const ctx = {
-  logger: {
-    stream: undefined,
-    error: () => { }
-  },
-  db: {
-    User: {
-      findOne: async (userName) => {
-        if (userName === 'notExists') {
-          return undefined
-        }
-        return {
-          id: 1,
-          userName: 'test_',
-          password: bcrypt.hashSync('testtest', 1)
-        }
-      }
-    }
-  },
-  config
-}
+const ctx = require('./context')
 const app = require('../src/app')(ctx)
 
 const { expect } = chai

@@ -1,49 +1,7 @@
-const config = require('../src/config')
 const chai = require('chai')
 const chaiHttp = require('chai-http')
 const jwt = require('jsonwebtoken')
-const ctx = {
-  logger: {
-    stream: undefined,
-    error: (e) => { }
-  },
-  db: {
-    User: {
-      findByPk: async () => 'found',
-      findOne: async (userName) => {
-        if (userName === 'notExists') {
-          return undefined
-        }
-        return {
-          id: 1,
-          userName: 'test_',
-          password: bcrypt.hashSync('testtest', 1)
-        }
-      }
-    },
-    Note: {
-      create: async (note) => { },
-      findOne: async (params) => {
-        if (params.where.id !== 1) return {} //does not exists
-        return {
-          title: 'test',
-          content: 'test'
-        }
-      },
-      findAll: async () => {
-        return []
-      },
-      update: async (updateFileds, options) => {
-        if (options.where.id !== 1) {
-          return [0, []]
-        }
-        return [[1], [updateFileds]]
-      },
-      destroy: async () => { }
-    }
-  },
-  config
-}
+const ctx = require('./context')
 const app = require('../src/app')(ctx)
 
 const { expect } = chai
@@ -59,7 +17,7 @@ describe('note operations', () => {
     id: 1,
     userName: 'test'
   }
-  const accessToken = jwt.sign(user, config.secrets.accessToken)
+  const accessToken = jwt.sign(user, ctx.config.secrets.accessToken)
   describe('POST /api/notes', () => {
     it('should create note', (done) => {
       chai.request(app).post('/api/notes')

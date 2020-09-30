@@ -1,20 +1,6 @@
-const config = require('../src/config')
 const chai = require('chai')
 const chaiHttp = require('chai-http')
-
-const ctx = {
-  logger: {
-    stream: undefined,
-    error: (e) => { }
-  },
-  db: {
-    User: {
-      create: async () => { },
-      findOne: async () => null
-    }
-  },
-  config
-}
+const ctx = require('./context')
 const app = require('../src/app')(ctx)
 
 const { expect } = chai
@@ -30,7 +16,10 @@ describe('sign up', () => {
       chai.request(app)
         .post('/api/users/signup')
         .set('Content-Type', 'application/json')
-        .send(user)
+        .send({
+          userName: 'notExists',
+          password: 'test1234'
+        })
         .end((err, res) => {
           if (err) {
             done(err)
