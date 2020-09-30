@@ -20,8 +20,8 @@ module.exports = (sequelize, DataTypes) => {
 
   Note.associate = (models) => {
     Note.belongsTo(models.User, {
-      foreignKey: 'id',
-      targetKey: 'authorId',
+      foreignKey: 'authorId',
+      targetKey: 'id',
       onDelete: 'cascade'
     })
   }
