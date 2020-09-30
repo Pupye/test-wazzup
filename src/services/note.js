@@ -21,8 +21,11 @@ module.exports = (ctx) => {
       })
       return note
     },
-    getUserNotes: async (limit = 20, offset = 0, authorId) => {
-      limit = Math.min(limit, 20) // takes care of overflow
+    getUserNotes: async (limit, offset, authorId) => {
+      limit = isNaN(limit) ? 20 : limit
+      offset = isNaN(offset) ? 0 : offset
+
+      limit = Math.min(limit, 20) // takes care of curious people
       const notes = await db.Note.findAll({
         limit,
         offset,
