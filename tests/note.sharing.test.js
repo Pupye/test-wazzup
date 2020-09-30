@@ -39,7 +39,6 @@ describe('sharing note', () => {
             done(err)
           }
           expect(res).to.have.status(200)
-          console.log(res.body)
           expect(res.body).to.have.property('title')
           expect(res.body).to.have.property('content')
           done()

@@ -114,7 +114,6 @@ module.exports = (ctx, router) => {
       const note = await noteService(ctx).getSharedNote(encrypted)
       res.status(200).json(note)
     } catch (error) {
-      console.error(error.stack)
       logger.error(error.stack)
       next(error)
     }
