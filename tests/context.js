@@ -8,7 +8,7 @@ const generateAccessId = () => {
     hmac: false
   })
   const encrypted = encryptor.encrypt({
-    sharingKey: 'sharing 1',
+    sharingKey: 'sharing 1 1',
     noteId: 1,
     authorId: 1
   })
@@ -28,7 +28,7 @@ module.exports = {
   accessId: accessId,
   redisClient: {
     get: async (sharingKey) => {
-      if (sharingKey === 'sharing 1') {
+      if (sharingKey === 'sharing 1 1') {
         return accessId
       }
     },

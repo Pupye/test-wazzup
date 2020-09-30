@@ -73,7 +73,7 @@ module.exports = (ctx) => {
       if (!exists) {
         throw new UserError('note does not exists', 400)
       }
-      const sharingKey = `sharing ${authorId}`
+      const sharingKey = `sharing ${authorId} ${noteId}`
       let accessId = await redisClient.get(sharingKey)
       if (accessId) {
         return accessId
