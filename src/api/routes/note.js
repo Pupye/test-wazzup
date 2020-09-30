@@ -93,4 +93,18 @@ module.exports = (ctx, router) => {
       next(error)
     }
   })
+
+  router.post('/notes/:id/share', async (req, res, next) => {
+    try {
+      const noteId = parseInt(req.params.id)
+      const { user } = req
+      const accessId = await noteService(ctx).shareUserNote(noteId, user.id)
+      res.status(201).json({
+        accessId
+      })
+    } catch (error) {
+      logger.error(error.stack)
+      next(error)
+    }
+  })
 }

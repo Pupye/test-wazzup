@@ -1,8 +1,12 @@
 const UserError = require('../errors/userError')
+const Encryptor = require('simple-encryptor')
 
 module.exports = (ctx) => {
-  const { db } = ctx
-
+  const { db, config, redisClient } = ctx
+  const encryptor = Encryptor({
+    key: config.secrets.sharingSecret,
+    hmac: false
+  })
   return {
     createNote: async (note, authorId) => {
       const exists = await db.User.findByPk(authorId)
@@ -58,6 +62,30 @@ module.exports = (ctx) => {
           authorId
         }
       })
+    },
+    shareUserNote: async (noteId, authorId) => {
+      const exists = await db.Note.findOne({
+        where: {
+          id: noteId,
+          authorId
+        }
+      })
+      if (!exists) {
+        throw new UserError('note does not exists', 400)
+      }
+      const shareKey = `sharing ${authorId}`
+      let accessId = await redisClient.get(shareKey)
+      if (accessId) {
+        return accessId
+      } else {
+        const encrypted = encryptor.encrypt(exists)
+        accessId = encrypted
+          .replace(/\+/g, config.replacer.plus)
+          .replace(/\//g, config.replacer.slash)
+          .replace(/=/g, config.replacer.eq)
+        await redisClient.set(shareKey, accessId)
+        return accessId
+      }
     }
   }
 }

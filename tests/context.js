@@ -6,6 +6,10 @@ module.exports = {
     stream: undefined,
     error: (e) => { }
   },
+  redisClient: {
+    get: () => { },
+    set: () => { }
+  },
   db: {
     User: {
       findByPk: async () => 'found',
