@@ -73,7 +73,6 @@ module.exports = (ctx, router) => {
       const noteId = parseInt(req.params.id)
       const { user } = req
       const updateFields = req.body
-      console.log(noteId, user)
       const updatedNote = await noteService(ctx).updateUserNote(noteId, updateFields, user.id)
 
       res.status(200).json(updatedNote)

@@ -36,19 +36,20 @@ module.exports = (ctx) => {
       return notes
     },
     updateUserNote: async (noteId, updateFields, authorId) => {
-      const updatedNote = await db.Note.update(
+      const updatedNotes = await db.Note.update(
         updateFields,
         {
           where: {
             id: noteId,
             authorId
-          }
+          },
+          returning: true
         }
       )
-      if (!updatedNote || updatedNote.length === 0) {
+      if (updatedNotes[0] === 0) {
         throw new UserError('noting was updated', 403)
       }
-      return updatedNote[0]
+      return updatedNotes[1][0]
     }
   }
 }
