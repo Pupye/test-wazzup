@@ -43,8 +43,8 @@ describe('login user', () => {
             done(err)
           }
           expect(res).to.have.status(200)
-          expect(res.header).to.have.property('authorization')
-          const decoded = jwt.decode(res.header.authorization)
+          expect(res.body).to.have.property('accessToken')
+          const decoded = jwt.decode(res.body.accessToken)
           expect(decoded).to.have.property('id')
           expect(decoded).to.have.property('userName')
           expect(decoded.userName).to.eq(user.userName)

@@ -26,9 +26,10 @@ module.exports = (ctx, router) => {
   }), async (req, res, next) => {
     const user = req.body
     try {
-      const authToken = await userService(ctx).loginUser(user)
-      res.set('authorization', authToken)
-      res.status(200).end()
+      const accessToken = await userService(ctx).loginUser(user)
+      res.status(200).json({
+        accessToken
+      })
     } catch (error) {
       logger.error(error.stack)
       next(error)
