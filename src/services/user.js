@@ -17,7 +17,7 @@ module.exports = (ctx) => {
     },
     loginUser: async (user) => {
       const exists = await db.User.findOne({
-        where: { userName: user.userName }
+        where: { userName: user.userName }, raw: true
       })
       if (!exists) {
         throw new UserError('incorrect userName or password', 403)
@@ -28,8 +28,8 @@ module.exports = (ctx) => {
       }
       delete exists.password
       const authToken = jwt.sign(exists, config.secrets.accessToken)
-      const whilteListKey = `${user.id} white list`
-      await redisClient.append(whilteListKey, authToken)
+      const whilteListKey = `${exists.id} white list`
+      await redisClient.append(whilteListKey, ' ' + authToken)
       return authToken
     }
   }
