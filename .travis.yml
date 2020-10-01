@@ -1,0 +1,15 @@
+language: node_js
+node_js: 
+  - "stable"
+
+install:
+  - npm install 
+
+env:
+  global:
+  - NODE_ENV=test
+
+jobs:
+  include:
+    - stage: unit-test
+      script: npm test

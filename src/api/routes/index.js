@@ -1,10 +1,10 @@
 const { Router } = require('express')
-const userRoutes = require('./user')
-const noteRoutes = require('./note')
+const setUserRoutes = require('./user')
+const setNoteRoutes = require('./note')
 const router = Router()
 
 module.exports = (ctx) => {
-  userRoutes(ctx, router)
-  noteRoutes(ctx, router)
+  setUserRoutes(ctx, router)
+  setNoteRoutes(ctx, router)
   return router
 }
