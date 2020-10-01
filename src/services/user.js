@@ -27,10 +27,30 @@ module.exports = (ctx) => {
         throw new UserError('incorrect userName or password', 403)
       }
       delete exists.password
-      const authToken = jwt.sign(exists, config.secrets.accessToken)
+      const authToken = jwt.sign(exists, config.secrets.accessToken, {
+        expiresIn: config.jwtLifeTime
+      })
       const whilteListKey = `${exists.id} white list`
       await redisClient.append(whilteListKey, ' ' + authToken)
       return authToken
+    },
+    logoutUser: async (authHeader) => {
+      if (!authHeader) {
+        throw new UserError('no auth header defined, playing games??', 403)
+      }
+      const token = authHeader.split(' ')[1]
+      const verified = jwt.verify(token, config.secrets.accessToken)
+      const whiteListKey = `${verified.id} white list`
+      const whiteListString = await redisClient.get(whiteListKey)
+      if (whiteListString) {
+        let whiteListedTokens = whiteListString.split(' ')
+        whiteListedTokens = whiteListedTokens.filter((whiteListedToken) => whiteListedToken !== token)
+        await redisClient.set(whiteListKey, whiteListedTokens.join(' '))
+      }
+    },
+    logoutFromAll: async (user) => {
+      const whiteListKey = `${user.id} white list`
+      await redisClient.del(whiteListKey)
     }
   }
 }

@@ -19,5 +19,6 @@ module.exports = {
     plus: process.env.PLUS_REPLACE,
     slash: process.env.SLASH_REPLACE,
     eq: process.env.EQ_REPLACE
-  }
+  },
+  jwtLifeTime: process.env.JWT_LIFETIME
 }

@@ -36,11 +36,12 @@ module.exports = {
   accessId,
   accessToken,
   redisClient: {
+    del: async () => { },
     append: async () => { },
     get: async (sharingKey) => {
       const storage = {
         'sharing 1 1': accessId,
-        '1 white list': `${accessToken} ${accessToken}`
+        '1 white list': `${accessToken} ${accessToken} other`
       }
       return storage[sharingKey]
     },

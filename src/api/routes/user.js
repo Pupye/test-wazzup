@@ -1,5 +1,6 @@
 const { celebrate, Joi, Segments } = require('celebrate')
 const { userService } = require('../../services')
+const { authenticate } = require('../middlewares')
 
 module.exports = (ctx, router) => {
   const { logger } = ctx
@@ -35,4 +36,26 @@ module.exports = (ctx, router) => {
       next(error)
     }
   })
+
+  router.post('/users/logout', async (req, res, next) => {
+    try {
+      const authHeader = req.headers.authorization
+      await userService(ctx).logoutUser(authHeader)
+      res.status(200).end()
+    } catch (error) {
+      logger.error(error.stack)
+      next(error)
+    }
+  })
+  router.post('/users/logout/all', authenticate(ctx),
+    async (req, res, next) => {
+      try {
+        const user = req.user
+        await userService(ctx).logoutFromAll(user)
+        res.status(200).end()
+      } catch (error) {
+        logger.error(error.stack)
+        next(error)
+      }
+    })
 }
