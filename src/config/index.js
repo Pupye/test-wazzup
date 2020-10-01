@@ -20,5 +20,12 @@ module.exports = {
     slash: process.env.SLASH_REPLACE,
     eq: process.env.EQ_REPLACE
   },
-  jwtLifeTime: process.env.JWT_LIFETIME
+  jwtLifeTime: process.env.JWT_LIFETIME,
+  db: {
+    username: process.env.DB_USER_NAME,
+    password: process.env.DB_PASS,
+    database: process.env.DB_NAME,
+    hort: process.env.DB_HOST,
+    port: process.env.DB_PORT
+  }
 }
