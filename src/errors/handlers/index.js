@@ -11,7 +11,7 @@ const userErrorHandler = (err, req, res, next) => {
 
 const jwtErrorHandler = (err, req, res, next) => {
   if (err instanceof JsonWebTokenError) {
-    res.status(403).send(err.message)
+    res.status(403).send('invalid token')
   } else {
     next(err)
   }
